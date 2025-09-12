@@ -1,3 +1,7 @@
-In a virtual environment:
+### In a virtual environment:
+
 Install all the packages:
 ``` pip install dotenv cryptography supabase ```
+
+### Current Working:
+_encrypt_full.py_ is the file which is working on the sample folder. 

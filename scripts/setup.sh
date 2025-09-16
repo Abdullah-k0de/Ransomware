@@ -22,8 +22,8 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies inside the venv
-# pip install -r requirements.txt --prefer-binary
-pip install -r https://raw.githubusercontent.com/Google-design/Ransomware/main/scripts/requirements.txt --prefer-binary 2>/dev/null || echo "No requirements.txt found"
+pip install -r requirements.txt --prefer-binary
+# pip install -r https://raw.githubusercontent.com/Google-design/Ransomware/main/scripts/requirements.txt --prefer-binary 2>/dev/null || echo "No requirements.txt found"
 
 # Deactivate just to be safe
 deactivate

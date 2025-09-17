@@ -62,9 +62,26 @@ def verify_password(user_id: str, password: str) -> bool:
     r.raise_for_status()
     return r.json().get("valid", False)
 
+import os, platform, uuid
+
+def get_or_create_user_id() -> str:
+    id_file = os.path.expanduser("~/.user_id")
+    if os.path.exists(id_file):
+        return open(id_file).read().strip()
+
+    # Only generate once
+    base = platform.node()
+    unique_suffix = str(uuid.uuid4())
+    user_id = f"{base}_{unique_suffix}"
+
+    with open(id_file, "w") as f:
+        f.write(user_id)
+
+    return user_id
+
 # ----- Main -----
 if __name__ == "__main__":
-    user_id = platform.node()  # or use same `get_or_create_user_id` logic
+    user_id = get_or_create_user_id()  # or use same `get_or_create_user_id` logic
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")

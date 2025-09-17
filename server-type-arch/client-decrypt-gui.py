@@ -64,7 +64,7 @@ def verify_password(user_id: str, password: str) -> bool:
 
 # ----- Main -----
 if __name__ == "__main__":
-    user_id = platform.nodename  # or use same `get_or_create_user_id` logic
+    user_id = platform.node()  # or use same `get_or_create_user_id` logic
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")

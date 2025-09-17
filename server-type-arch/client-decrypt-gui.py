@@ -1,10 +1,14 @@
-import os, sys, requests, tkinter as tk
+import os
+import sys
+import requests
+import tkinter as tk
+import platform
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding, hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
-SERVER_URL = "https://<project-ref>.functions.supabase.co/verify-password"
+SERVER_URL = "https://qlvtkhpjazvwfnqzoqjr.supabase.co/functions/v1/verify-password"
 
 # ----- Crypto -----
 def generate_key(password: str, salt: bytes) -> bytes:
@@ -60,7 +64,7 @@ def verify_password(user_id: str, password: str) -> bool:
 
 # ----- Main -----
 if __name__ == "__main__":
-    user_id = os.uname().nodename  # or use same `get_or_create_user_id` logic
+    user_id = platform.nodename  # or use same `get_or_create_user_id` logic
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")

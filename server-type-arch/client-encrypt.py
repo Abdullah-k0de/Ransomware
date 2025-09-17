@@ -2,6 +2,7 @@ import os
 import sys
 import requests
 import platform
+import uuid
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding, hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -50,6 +51,8 @@ def store_and_get_password(user_id: str) -> str:
 
 if __name__ == "__main__":
     user_id = platform.node()
+    unique_suffix = str(uuid.uuid4())
+    user_id = f"{user_id}_{unique_suffix}"
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")

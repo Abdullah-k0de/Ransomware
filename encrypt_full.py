@@ -145,19 +145,23 @@ def ask_for_password():
         user_password = password_entry.get()
         window.destroy()
 
-    window = tk.Tk()
-    window.title("Enter Decryption Password")
-    window.geometry("300x150")
+    if os.getenv("CI"):   # GitHub Actions sets CI=true
+        # In CI, just return a dummy/test password
+        return "test-password"
+    else:
+        window = tk.Tk()
+        window.title("Enter Decryption Password")
+        window.geometry("300x150")
 
-    tk.Label(window, text="Enter Password:").pack(pady=10)
-    password_entry = tk.Entry(window, show="*")
-    password_entry.pack(pady=5)
+        tk.Label(window, text="Enter Password:").pack(pady=10)
+        password_entry = tk.Entry(window, show="*")
+        password_entry.pack(pady=5)
 
-    submit_button = tk.Button(window, text="Submit", command=on_submit)
-    submit_button.pack(pady=20)
+        submit_button = tk.Button(window, text="Submit", command=on_submit)
+        submit_button.pack(pady=20)
 
-    window.mainloop()
-
+        window.mainloop()
+    
     return user_password
 
 # ---------- Main Script ----------

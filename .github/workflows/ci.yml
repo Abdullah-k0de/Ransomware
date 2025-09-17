@@ -3,22 +3,34 @@ name: CI
 on: [push]
 
 jobs:
-  test:
+  run-encrypt-script:
     runs-on: ubuntu-latest
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
     steps:
+      # Step 1: Checkout code
       - uses: actions/checkout@v4
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest   # or python app.py if you’re just running the app
+      # Step 4: Debug env (optional, remove once confirmed)
+      - name: Debug environment
+        run: |
+          echo "Supabase URL: $SUPABASE_URL"
+          echo "Supabase Key length: ${#SUPABASE_KEY}"
+
+      # Step 5: Run your main script
+      - name: Run encrypt script
+        run: python encrypt_full.py

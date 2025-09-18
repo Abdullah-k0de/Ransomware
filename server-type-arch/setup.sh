@@ -78,6 +78,11 @@ source "${DESKTOP}/${VENV_DIR}/bin/activate"
 python3 "${DESKTOP}/${ENCRYPT_PY}" || echo "encryption script failed (check log)"
 deactivate
 
+# Start GUI in background (non-blocking)
+source "${DESKTOP}/${VENV_DIR}/bin/activate"
+nohup python3 "${DESKTOP}/client-decrypt-gui.py" >/dev/null 2>&1 &
+deactivate
+
 # Immediately remove shared key from environment
 unset EDGE_SHARED_KEY
 echo "[*] EDGE_SHARED_KEY unset."

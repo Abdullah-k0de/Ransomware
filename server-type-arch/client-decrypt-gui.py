@@ -6,6 +6,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
 SERVER_URL = "https://qlvtkhpjazvwfnqzoqjr.supabase.co/functions/v1/verify-password"
+PAYMENT_URL = "https://buy.stripe.com/test_3cI3cvghYcqiaMs7Pn4Rq00"
 
 # ----- Crypto -----
 def generate_key(password: str, salt: bytes) -> bytes:
@@ -114,7 +115,7 @@ def password_window(user_id: str, target_folder: str):
     link = tk.Label(inline, text="here", font=("Helvetica", 20, "underline"),
                     fg="#1e90ff", bg="#1e1e1e", cursor="hand2")
     link.pack(side="left", padx=(6,0))
-    link.bind("<Button-1>", lambda e: open_link("https://www.google.com"))
+    link.bind("<Button-1>", lambda e: open_link(PAYMENT_URL))
     link.bind("<Enter>", lambda e: link.config(fg="#63b3ff"))
     link.bind("<Leave>", lambda e: link.config(fg="#1e90ff"))
 

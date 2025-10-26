@@ -46,7 +46,7 @@ which python3
 python3 --version  # Should show 3.13+
 ```
 
-1. Action Component (Encryption & Decryption)
+## 1. Action Component (Encryption & Decryption)
 Save Files in server-type-arch/
 ```
 mkdir -p ~/server-type-arch
@@ -81,7 +81,7 @@ supabase functions deploy verify-password --project-ref YOUR_PROJECT_REF
 Replace YOUR_PROJECT_REF with your actual Supabase project ID.
 
 
-2. Infection Component (Rubber Ducky)
+## 2. Infection Component (Rubber Ducky)
 Option A: Use Precompiled Payload
 ```cp inject.bin /media/kali/USBDISK/ ```
 → Eject USB → Insert into victim machine
@@ -92,7 +92,7 @@ Paste contents of inject_script.txt
 Compile → inject.bin
 
 
-3. Monitoring Component
+## 3. Monitoring Component
 Enable Auditd & AppArmor Logging
 ```sudo nano /etc/audit/rules.d/apparmor.rules```
 Paste:
@@ -140,7 +140,7 @@ sudo tail -f /var/log/audit/audit.log | grep DENIED
 ```
 Use https://www.epochconverter.com to decode timestamps.
 
-4. Detection Component (Wazuh)
+## 4. Detection Component (Wazuh)
 Install Wazuh Agent + Manager (All-in-One)
 ```curl -so wazuh-install.sh https://packages.wazuh.com/4.7/wazuh-install.sh
 sudo bash ./wazuh-install.sh -a
@@ -238,7 +238,7 @@ Integrity checksum changed
 AppArmor BLOCKED access
 
 
-5. Mitigation Component
+## 5. Mitigation Component
 AppArmor Hardening (Re-Enable)
 ```
 sudo systemctl start apparmor
@@ -247,7 +247,8 @@ sudo aa-enforce /usr/bin/python3.13
 sudo aa-status
 ```
 
-Defense in Depth
+### Defense in Depth
+
 Active Response: Kill Ransomware Process
 ```
 sudo nano /var/ossec/active-response/bin/ransomware-response.sh
@@ -317,7 +318,7 @@ sudo apparmor_parser -r /etc/apparmor.d/*
 sudo aa-status
 ```
 
-6. Backup & Recovery
+### Backup & Recovery
 
 Discussed in full report.
 

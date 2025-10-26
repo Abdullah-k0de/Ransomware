@@ -11,15 +11,23 @@ A complete, step-by-step README for simulating a **ransomware attack** using a *
 
 ## Project Structure
 server-type-arch/
+
 ├── client-encrypt.py          # Encryption GUI (attacker)
+
 ├── client-decrypt-gui.py      # Decryption GUI (victim)
+
 ├── setup.sh                   # Rubber Ducky background payload
+
 ├── store-credentials.ts       # Supabase: store encrypted key
+
 ├── verify-password.ts         # Supabase: verify ransom password
+
 ├── inject_script.txt          # Raw Ducky script
+
 ├── inject.bin                 # Compiled payload (copy to Ducky)
+
 └── ransomware-response.sh     # Wazuh active response (kill + log)
-text---
+
 
 ## Prerequisites (Install First!)
 

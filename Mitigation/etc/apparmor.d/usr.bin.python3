@@ -1,0 +1,20 @@
+#include <tunables/global>
+
+/usr/bin/python3.13 flags=(attach_disconnected, audit) {
+  # Log any denied writes anywhere
+  audit deny /** w,
+
+  #include <abstractions/base>
+  #include <abstractions/python>
+
+  /usr/bin/python3 ix,
+  /usr/lib/python3*/** rix,
+  /usr/local/lib/python3*/** rix,
+
+  # Allow read/write/execute in home directory, except where denied
+  owner @{HOME}/** rwix,
+
+  # Explicitly deny access to protected folder and venv
+  deny /home/kali/Desktop/personal_Fa0337/** rwk,
+  deny /home/kali/Desktop/venv/** rwk,
+}

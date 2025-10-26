@@ -162,7 +162,8 @@ sudo systemctl restart wazuh-manager
 
 Add Local Detection Rules
 ```
-sudo nano /var/ossec/etc/rules/local_rules.xml```
+sudo nano /var/ossec/etc/rules/local_rules.xml
+```
 Paste full content (replace any existing <group>):
 ```
 <!-- Local rules -->

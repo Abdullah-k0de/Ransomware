@@ -10,22 +10,18 @@
   Dec 10 01:02:02 host sshd[1234]: Failed none for root>
   -->
   <rule id="200100" level="10">
-  <if_sid>554</if_sid>
-  <match>encrypted|\.enc|\.locky|\.cry|\.crypt|/\.encry>
-  <description>Possible ransomware encryption detected!>
-  <mitre><id>T1486</id></mitre>
-</rule>
+    <if_sid>554</if_sid>
+    <match>encrypted|\.enc|\.locky|\.cry|\.crypt|/\.encry>
+    <description>Possible ransomware encryption detected!>
+    <mitre><id>T1486</id></mitre>
+  </rule>
 
-
-
-<rule id="200100" level="10">
-  <if_sid>550</if_sid>
-  <match>encrypted|\.enc|\.locky|\.cry|\.crypt|/.encryp>
-  <description>Possible ransomware encryption detected!>
-  <mitre><id>T1486</id></mitre>
-
-</rule>
-
+  <rule id="200100" level="10">
+    <if_sid>550</if_sid>
+    <match>encrypted|\.enc|\.locky|\.cry|\.crypt|/.encryp>
+    <description>Possible ransomware encryption detected!>
+    <mitre><id>T1486</id></mitre>
+  </rule>
 
   <!-- Detect mass file modifications within a short pe -->
   <rule id="200101" level="9" frequency="10" timeframe=>
@@ -39,7 +35,8 @@
     <match>\/bin\/|\/sbin\/|\/usr\/bin\/</match>
     <description>Unauthorized modification of critical >
   </rule>
-<!-- ============================================ -->
+  
+  <!-- ============================================ -->
   <!-- APPARMOR DENIAL RULES (SIMPLIFIED & WORKING) -->
   <!-- ============================================ -->
 

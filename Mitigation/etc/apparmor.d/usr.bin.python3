@@ -1,20 +1,26 @@
 #include <tunables/global>
 
 /usr/bin/python3.13 flags=(attach_disconnected, audit) {
-  # Log any denied writes anywhere
+  # Logs any denied write attempts across the entire filesystem
   audit deny /** w,
 
+  # Includes standard system abstractions
   #include <abstractions/base>
+  # Includes Python runtime and package abstractions
   #include <abstractions/python>
 
+  # Allows execution of the Python 3.13 interpreter
   /usr/bin/python3 ix,
+  # Grants read and execute access to system Python libraries
   /usr/lib/python3*/** rix,
+  # Grants read and execute access to locally installed Python packages
   /usr/local/lib/python3*/** rix,
 
-  # Allow read/write/execute in home directory, except where denied
+  # Grants full access (read/write/execute) to all files in the user's home directory
   owner @{HOME}/** rwix,
 
-  # Explicitly deny access to protected folder and venv
+  # Explicitly denies all access to the protected personal folder
   deny /home/kali/Desktop/personal_Fa0337/** rwk,
+  # Explicitly denies all access to the virtual environment directory
   deny /home/kali/Desktop/venv/** rwk,
 }

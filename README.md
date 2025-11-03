@@ -358,6 +358,9 @@ sudo systemctl status wazuh-manager
 Active response not firing
 Check /var/ossec/logs/active-responses.log
 
+## Video
+![Demo Video Demonstration](media/video.mp4)
+
 References
 - Wazuh Docs: https://documentation.wazuh.com
 - AppArmor: https://gitlab.com/apparmor/apparmor
